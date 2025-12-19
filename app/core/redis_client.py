@@ -1,8 +1,21 @@
-import os
-
 import redis.asyncio as redis
+from pydantic_settings import BaseSettings
 
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
-redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
+class Settings(BaseSettings):
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
+
+    APP_HOST: str = "0.0.0.0"
+    APP_PORT: int = 8000
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+
+settings = Settings()
+
+redis_client = redis.Redis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, decode_responses=True
+)
