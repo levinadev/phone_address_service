@@ -16,6 +16,8 @@ pip-wheel-metadata/
 .env.*
 !.env.example
 
+.python-version
+
 *.log
 
 *.tar
