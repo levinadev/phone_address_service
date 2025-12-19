@@ -1,4 +1,3 @@
-exclude: "^logs/"
 default_stages: [pre-commit]
 
 repos:
