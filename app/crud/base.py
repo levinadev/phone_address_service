@@ -1,9 +1,12 @@
+from redis.asyncio.client import Redis
+
+
 class BaseRedisCRUD:
     """
     Базовые CRUD-методы для Redis
     """
 
-    def __init__(self, client):
+    def __init__(self, client: Redis):
         self.client = client
 
     async def get(self, key: str) -> str:
