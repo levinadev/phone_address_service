@@ -1,30 +1,27 @@
-from typing import Optional
-
 from app.core.redis_client import redis_client
+from app.crud.base import BaseRedisCRUD
 
 
-class PhoneAddressCRUD:
-    @staticmethod
-    async def get(phone: str) -> Optional[str]:
-        return await redis_client.get(phone)
+class PhoneAddressCRUD(BaseRedisCRUD):
+    """
+    CRUD для связки phone-address
+    Интерфейс использует phone и address вместо key/value
+    """
 
-    @staticmethod
-    async def create(phone: str, address: str) -> bool:
-        exists = await redis_client.exists(phone)
-        if exists:
-            return False
-        await redis_client.set(phone, address)
-        return True
+    async def get(self, phone: str) -> str | None:
+        return await super().get(key=phone)
 
-    @staticmethod
-    async def update(phone: str, address: str) -> bool:
-        exists = await redis_client.exists(phone)
-        if not exists:
-            return False
-        await redis_client.set(phone, address)
-        return True
+    async def create(self, phone: str, address: str) -> None:
+        await super().create(key=phone, value=address)
 
-    @staticmethod
-    async def delete(phone: str) -> bool:
-        deleted = await redis_client.delete(phone)
-        return bool(deleted)
+    async def update(self, phone: str, address: str) -> None:
+        await super().update(key=phone, value=address)
+
+    async def delete(self, phone: str) -> None:
+        await super().delete(key=phone)
+
+    async def exists(self, phone: str) -> bool:
+        return await super().exists(key=phone)
+
+
+phone_address_crud = PhoneAddressCRUD(client=redis_client)

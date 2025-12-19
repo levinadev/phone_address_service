@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from app.api.validators import check_phone_duplicate, check_phone_exists
-from app.crud.address import PhoneAddressCRUD
+from app.crud.address import phone_address_crud
 from app.schemas.address import (
     AddressUpdate,
     PhoneAddressCreate,
@@ -18,8 +18,8 @@ router = APIRouter()
 )
 async def get_address(phone: str):
     await check_phone_exists(phone)
-    address = await PhoneAddressCRUD.get(phone)
-    return {"phone": phone, "address": address}
+    address = await phone_address_crud.get(phone)
+    return PhoneAddressResponse(phone=phone, address=address)
 
 
 @router.post(
@@ -29,8 +29,8 @@ async def get_address(phone: str):
 )
 async def create_address(data: PhoneAddressCreate):
     await check_phone_duplicate(data.phone)
-    await PhoneAddressCRUD.create(phone=data.phone, address=data.address)
-    return {"phone": data.phone, "address": data.address}
+    await phone_address_crud.create(phone=data.phone, address=data.address)
+    return PhoneAddressResponse(phone=data.phone, address=data.address)
 
 
 @router.put(
@@ -40,8 +40,8 @@ async def create_address(data: PhoneAddressCreate):
 )
 async def update_address(phone: str, data: AddressUpdate):
     await check_phone_exists(phone)
-    await PhoneAddressCRUD.update(phone=phone, address=data.address)
-    return {"phone": phone, "address": data.address}
+    await phone_address_crud.update(phone=phone, address=data.address)
+    return PhoneAddressResponse(phone=phone, address=data.address)
 
 
 @router.delete(
@@ -50,4 +50,4 @@ async def update_address(phone: str, data: AddressUpdate):
 )
 async def delete_address(phone: str):
     await check_phone_exists(phone)
-    await PhoneAddressCRUD.delete(phone)
+    await phone_address_crud.delete(phone)
