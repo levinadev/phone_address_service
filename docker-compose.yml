@@ -1,0 +1,32 @@
+networks:
+  phone_network:
+
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    restart: on-failure
+    ports:
+      - "6380:6379"   # порт для Redis-клиента
+      - "8002:8001"   # порт для Redis Stack UI
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - phone_network
+
+  api:
+    build: .
+    container_name: phone_address_api
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - phone_network
