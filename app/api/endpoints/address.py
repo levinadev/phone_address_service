@@ -17,6 +17,9 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
 )
 async def get_address(phone: str) -> PhoneAddressResponse:
+    """
+    Получить адрес по номеру телефона.
+    """
     await check_phone_exists(phone)
     address = await phone_address_crud.get(phone)
     return PhoneAddressResponse(phone=phone, address=address)
@@ -28,6 +31,9 @@ async def get_address(phone: str) -> PhoneAddressResponse:
     status_code=status.HTTP_201_CREATED,
 )
 async def create_address(data: PhoneAddressCreate) -> PhoneAddressResponse:
+    """
+    Создать новую связку телефон-адрес.
+    """
     await check_phone_duplicate(data.phone)
     await phone_address_crud.create(phone=data.phone, address=data.address)
     return PhoneAddressResponse(phone=data.phone, address=data.address)
@@ -39,6 +45,9 @@ async def create_address(data: PhoneAddressCreate) -> PhoneAddressResponse:
     status_code=status.HTTP_200_OK,
 )
 async def update_address(phone: str, data: AddressUpdate) -> PhoneAddressResponse:
+    """
+    Обновить адрес для существующего телефона.
+    """
     await check_phone_exists(phone)
     await phone_address_crud.update(phone=phone, address=data.address)
     return PhoneAddressResponse(phone=phone, address=data.address)
@@ -48,6 +57,9 @@ async def update_address(phone: str, data: AddressUpdate) -> PhoneAddressRespons
     "/{phone}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_address(phone: str):
+async def delete_address(phone: str) -> None:
+    """
+    Удалить телефон-адрес связку.
+    """
     await check_phone_exists(phone)
     await phone_address_crud.delete(phone)
