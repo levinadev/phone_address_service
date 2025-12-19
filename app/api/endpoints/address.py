@@ -16,7 +16,7 @@ router = APIRouter()
     response_model=PhoneAddressResponse,
     status_code=status.HTTP_200_OK,
 )
-async def get_address(phone: str):
+async def get_address(phone: str) -> PhoneAddressResponse:
     await check_phone_exists(phone)
     address = await phone_address_crud.get(phone)
     return PhoneAddressResponse(phone=phone, address=address)
@@ -27,7 +27,7 @@ async def get_address(phone: str):
     response_model=PhoneAddressResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_address(data: PhoneAddressCreate):
+async def create_address(data: PhoneAddressCreate) -> PhoneAddressResponse:
     await check_phone_duplicate(data.phone)
     await phone_address_crud.create(phone=data.phone, address=data.address)
     return PhoneAddressResponse(phone=data.phone, address=data.address)
@@ -38,7 +38,7 @@ async def create_address(data: PhoneAddressCreate):
     response_model=PhoneAddressResponse,
     status_code=status.HTTP_200_OK,
 )
-async def update_address(phone: str, data: AddressUpdate):
+async def update_address(phone: str, data: AddressUpdate) -> PhoneAddressResponse:
     await check_phone_exists(phone)
     await phone_address_crud.update(phone=phone, address=data.address)
     return PhoneAddressResponse(phone=phone, address=data.address)
